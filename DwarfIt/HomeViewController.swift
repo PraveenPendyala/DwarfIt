@@ -11,11 +11,15 @@ import UIKit
 final class HomeViewController: UIViewController {
     
     // Properties
+    @IBOutlet weak var selectedImageView: UIImageView!
     
     lazy var picker: UIImagePickerController = {
         return UIImagePickerController()
     }()
 
+    @IBAction func loadImagePicker(_ sender: Any) {
+        self.present(self.picker, animated: true, completion: nil)
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -33,5 +37,10 @@ final class HomeViewController: UIViewController {
 // MARK: Image Picker Delegate
 
 extension HomeViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let selectedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            self.selectedImageView.image = selectedImage
+            self.picker.dismiss(animated: true, completion: nil)
+        }
+    }
 }

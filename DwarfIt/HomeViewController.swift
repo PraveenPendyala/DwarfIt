@@ -40,7 +40,11 @@ extension HomeViewController: UIImagePickerControllerDelegate, UINavigationContr
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let selectedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             self.selectedImageView.image = selectedImage
-            self.picker.dismiss(animated: true, completion: nil)
+            var rotationAndPerspectiveTransform = CATransform3DIdentity
+            rotationAndPerspectiveTransform.m34 = 1.0 / 1000
+            rotationAndPerspectiveTransform = CATransform3DRotate(rotationAndPerspectiveTransform, CGFloat( 45 * .pi/180.0), 1, 0, 0)
+            self.selectedImageView.layer.transform   = rotationAndPerspectiveTransform
         }
+        self.picker.dismiss(animated: true, completion: nil)
     }
 }

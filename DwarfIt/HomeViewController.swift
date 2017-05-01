@@ -39,11 +39,12 @@ final class HomeViewController: UIViewController {
 extension HomeViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let selectedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            self.selectedImageView.image = selectedImage
-            var rotationAndPerspectiveTransform = CATransform3DIdentity
-            rotationAndPerspectiveTransform.m34 = 1.0 / 1000
-            rotationAndPerspectiveTransform = CATransform3DRotate(rotationAndPerspectiveTransform, CGFloat( 45 * .pi/180.0), 1, 0, 0)
-            self.selectedImageView.layer.transform   = rotationAndPerspectiveTransform
+            let filter = CIFilter(name: "CIPerspectiveTransform", withInputParameters: ["inputImage" : CIImage(cgImage: selectedImage.cgImage!) ])
+            filter?.setDefaults()
+            filter?.setValue(CIVector(x:180, y:600) , forKey: "inputTopLeft")
+            filter?.setValue(CIVector(x:102, y:20) , forKey: "inputBottomLeft")
+            let ciImage = filter?.value(forKey: kCIOutputImageKey)
+            self.selectedImageView.image = UIImage(ciImage: ciImage as! CIImage)
         }
         self.picker.dismiss(animated: true, completion: nil)
     }
